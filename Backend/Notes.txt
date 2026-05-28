@@ -1,0 +1,38 @@
+Authentication system
+chat with AI
+chat history
+message storage
+Ai with internet rresearch feature
+
+
+
+Data modeling 
+-------------------------------
+--------------------------------
+
+
+
+----------------------------
+all collection 
+----------------------------
+User==> _id,username,email,password,verified,createdAt, updatedAt
+
+chat ==> _id,user,title,createdAt,updatedAt
+
+message = _id,chat,content,role=[user,ai]
+
+
+
+GENERATIVE  AI = > CONTENT GENERATE KRNA [TEXT,CODE IMAGE ,AUDIO ,VIDEO]
+AI Service provide = 1.Trainin an llm  2.Hoisting an llm 3. providing apis to access the llm
+ex. OpenAi , Cohere ,Google ,Microsoft ,anthropic ,Mistral,etc.
+
+
+
+
+
+
+
+
+
+

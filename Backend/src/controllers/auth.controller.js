@@ -169,7 +169,11 @@ export async function getMe(req, res) {
     return res.status(200).json({
       message: "User details fetched successfully",
       success: true,
-      data: user,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
     });
 
   } catch (error) {

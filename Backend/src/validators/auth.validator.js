@@ -23,10 +23,9 @@ export const registerValidation = [
         .matches(/^[a-zA-Z0-9_]+$/).withMessage("Username can only contain letters, numbers, and underscores"),
 
     body("email")
-        .trim()
-        .notEmpty().withMessage("Email is required")
-        .isEmail().withMessage("Enter a valid email address")
-        .normalizeEmail(),
+    .trim()
+    .notEmpty().withMessage("Email is required")
+    .isEmail().withMessage("Enter a valid email address"),
 
     body("password")
         .notEmpty().withMessage("Password is required")
@@ -40,13 +39,12 @@ export const registerValidation = [
 
 export const loginValidator=[
     body("email")
-    .trim()
-    .notEmpty().withMessage("Email is required")
-    .isEmail().withMessage("Please provide a valid email"),
+        .trim()
+        .notEmpty().withMessage("Email is required")
+        .isEmail().withMessage("Please provide a valid email"),
 
     body("password")
-    .notEmpty().withMessage("Password is required"),
+        .notEmpty().withMessage("Password is required"),
 
-    validate
-
+    validate,
 ]

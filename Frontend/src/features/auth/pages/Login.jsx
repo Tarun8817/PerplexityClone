@@ -1,144 +1,143 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../hook/useAuth'
+import React, { useState } from "react";
+
+import { useNavigate, Navigate } from "react-router-dom";
+
+import { useAuth } from "../hook/useAuth";
+
+import { useSelector } from "react-redux";
 
 const Login = () => {
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [loading, setLoading] = useState(false)
+    const navigate = useNavigate();
 
-    const { handleLogin } = useAuth()
+    const { handleLogin } = useAuth();
 
-    const navigate = useNavigate()
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-    const submitForm = async (event) => {
-        event.preventDefault()
+    const user = useSelector(
+        (state) => state.auth.user
+    );
+
+    const loading = useSelector(
+        (state) => state.auth.loading
+    );
+
+    const submitForm = async (e) => {
+
+        e.preventDefault();
+
         try {
-            setLoading(true)
-            const payload = {
+
+            await handleLogin({
                 email,
                 password,
-            }
-            await handleLogin(payload)
-            navigate("/")
+            });
+
+            navigate("/");
+
         } catch (error) {
-            console.log(error)
-        } finally {
-            setLoading(false)
+            console.log(error);
         }
+    };
+
+    if (!loading && user) {
+        return <Navigate to="/" replace />;
     }
 
     return (
         <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
+
             <div className="w-full max-w-md">
+
                 <div className="bg-gray-800 rounded-lg shadow-2xl p-8 border border-gray-700">
 
-                    {/* Header */}
                     <div className="text-center mb-8">
+
                         <h1
                             className="text-4xl font-bold mb-2"
-                            style={{ color: '#31b8c6' }}
+                            style={{ color: "#31b8c6" }}
                         >
                             Login
                         </h1>
 
-                        <p className="text-gray-400 text-sm mt-2">
-                            Welcome back to Perplexity
+                        <p className="text-gray-400 text-sm">
+                            Welcome back
                         </p>
                     </div>
 
-                    {/* Form */}
-                    <form onSubmit={submitForm} className="space-y-6">
+                    <form
+                        onSubmit={submitForm}
+                        className="space-y-6"
+                    >
 
-                        {/* Email Field */}
                         <div>
-                            <label
-                                htmlFor="email"
-                                className="block text-sm font-medium text-gray-300 mb-2"
-                            >
-                                Email Address
+                            <label className="block text-sm text-gray-300 mb-2">
+                                Email
                             </label>
 
                             <input
                                 type="email"
-                                id="email"
-                                name="email"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={(e) =>
+                                    setEmail(e.target.value)
+                                }
                                 required
                                 placeholder="you@example.com"
-                                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none transition"
-                                onFocus={(e) => e.target.style.borderColor = '#31b8c6'}
-                                onBlur={(e) => e.target.style.borderColor = ''}
+                                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-400"
                             />
                         </div>
 
-                        {/* Password Field */}
                         <div>
-                            <label
-                                htmlFor="password"
-                                className="block text-sm font-medium text-gray-300 mb-2"
-                            >
+                            <label className="block text-sm text-gray-300 mb-2">
                                 Password
                             </label>
 
                             <input
                                 type="password"
-                                id="password"
-                                name="password"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(e) =>
+                                    setPassword(e.target.value)
+                                }
                                 required
                                 placeholder="••••••••"
-                                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none transition"
-                                onFocus={(e) => e.target.style.borderColor = '#31b8c6'}
-                                onBlur={(e) => e.target.style.borderColor = ''}
+                                className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-cyan-400"
                             />
                         </div>
 
-                        {/* Forgot Password Link */}
-                        <div className="text-right">
-                            <a
-                                href="#"
-                                className="text-sm transition"
-                                style={{ color: '#31b8c6' }}
-                            >
-                                Forgot password?
-                            </a>
-                        </div>
-
-                        {/* Submit Button */}
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full py-2 px-4 text-white font-semibold rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                            style={{ backgroundColor: '#31b8c6' }}
+                            className="w-full py-2 rounded-lg text-white font-semibold disabled:opacity-50"
+                            style={{ backgroundColor: "#31b8c6" }}
                         >
-                            {loading ? 'Logging in...' : 'Login'}
+                            {loading
+                                ? "Logging in..."
+                                : "Login"}
                         </button>
-
                     </form>
 
-                    {/* Register Link */}
                     <div className="mt-6 text-center">
+
                         <p className="text-gray-400 text-sm">
-                            Don't have an account?{' '}
+
+                            Don't have an account?{" "}
 
                             <button
-                                onClick={() => navigate('/register')}
-                                className="font-semibold transition bg-none border-none cursor-pointer"
-                                style={{ color: '#31b8c6' }}
+                                onClick={() =>
+                                    navigate("/register")
+                                }
+                                className="font-semibold"
+                                style={{ color: "#31b8c6" }}
                             >
                                 Register
                             </button>
                         </p>
                     </div>
-
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Login
+export default Login;

@@ -15,10 +15,11 @@ export async function getMessages(chatId) {
     return response.data; // Expected: { message: "...", message: [...] }
 }
 
-export async function sendMessage({ message, chatId }) {
+export async function sendMessage({ message, chatId, images }) {
     const response = await api.post("/api/chats/message", {
         message,
         chat: chatId,
+        images,
     });
     return response.data; // Expected: { title, chat, userMessage, aiMessage }
 }

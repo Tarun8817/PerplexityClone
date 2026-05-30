@@ -5,14 +5,14 @@ import { HumanMessage, AIMessage } from "@langchain/core/messages";
 
 export async function sendMessage(req, res) {
     try {
-        const { message, chat: chatId } = req.body;
+        const { message, chat: chatId, images } = req.body;
 
         let title = null,
             chat = null;
 
         // Create new chat if chatId not exists
         if (!chatId) {
-            title = await generateChatTitle(message);
+            title = await generateChatTitle(message || "Image Query");
 
             chat = await chatModel.create({
                 user: req.user.id,
@@ -25,8 +25,9 @@ export async function sendMessage(req, res) {
         // Save user message
         const userMessage = await messageModel.create({
             chat: chatId || chat._id,
-            content: message,
+            content: message || "",
             role: "user",
+            images: images || [],
         });
 
         // Get all messages from DB
@@ -37,6 +38,18 @@ export async function sendMessage(req, res) {
         // Convert DB messages to LangChain messages
         const formattedMessages = messages.map((msg) => {
             if (msg.role === "user") {
+                if (msg.images && msg.images.length > 0) {
+                    const content = [
+                        { type: "text", text: msg.content || "" }
+                    ];
+                    msg.images.forEach((img) => {
+                        content.push({
+                            type: "image_url",
+                            image_url: { url: img },
+                        });
+                    });
+                    return new HumanMessage({ content });
+                }
                 return new HumanMessage(msg.content);
             }
 

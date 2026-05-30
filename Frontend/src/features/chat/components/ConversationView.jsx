@@ -12,79 +12,52 @@ import {
     ExternalLink,
     Search,
     BookOpen,
+    Loader2,
 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
-// Helper to render beautiful content block by block (poor man's MD parser)
+// Helper to render beautiful content block by block (ReactMarkdown + GFM tables)
 const FormattedAnswer = ({ text }) => {
     if (!text) return null;
 
-    const lines = text.split("\n");
     return (
-        <div className="space-y-3.5 text-gray-200 text-[15px] leading-relaxed font-sans">
-            {lines.map((line, idx) => {
-                const trimmed = line.trim();
-
-                // Headers (e.g., ### title or ## title)
-                if (trimmed.startsWith("###")) {
-                    return (
-                        <h4 key={idx} className="text-base font-bold text-gray-100 mt-4">
-                            {trimmed.replace(/^###\s*/, "")}
-                        </h4>
-                    );
-                }
-                if (trimmed.startsWith("##") || trimmed.startsWith("#")) {
-                    return (
-                        <h3 key={idx} className="text-lg font-bold text-gray-100 mt-5 border-b border-[#252828] pb-1">
-                            {trimmed.replace(/^##?\s*/, "")}
-                        </h3>
-                    );
-                }
-
-                // Bullet Lists
-                if (trimmed.startsWith("-") || trimmed.startsWith("*")) {
-                    return (
-                        <ul key={idx} className="list-disc list-inside pl-4 text-gray-300">
-                            <li>{trimmed.substring(1).trim()}</li>
-                        </ul>
-                    );
-                }
-
-                // Numbered Lists
-                if (/^\d+\./.test(trimmed)) {
-                    return (
-                        <ol key={idx} className="list-decimal list-inside pl-4 text-gray-300">
-                            <li>{trimmed.replace(/^\d+\.\s*/, "")}</li>
-                        </ol>
-                    );
-                }
-
-                // Code block detection (simplified)
-                if (trimmed.startsWith("```")) {
-                    return null; // Skip backticks
-                }
-
-                // Empty line
-                if (trimmed === "") {
-                    return <div key={idx} className="h-2" />;
-                }
-
-                // Standard Paragraph (handles inline bold **text**)
-                const parts = trimmed.split(/(\*\*.*?\*\*)/g);
-                return (
-                    <p key={idx} className="text-gray-300">
-                        {parts.map((part, pIdx) => {
-                            if (part.startsWith("**") && part.endsWith("**")) {
-                                return (
-                                    <strong key={pIdx} className="font-semibold text-white">
-                                        {part.slice(2, -2)}
-                                    </strong>
-                                );
-                            }
-                            return part;
-                        })}
-                    </p>
-                );
-            })}
+        <div className="prose prose-invert max-w-none text-gray-200 text-[15px] leading-relaxed font-sans select-text">
+            <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                    p: ({ node, ...props }) => <p className="text-gray-300 mb-4 last:mb-0 leading-relaxed" {...props} />,
+                    strong: ({ node, ...props }) => <strong className="font-semibold text-white" {...props} />,
+                    h1: ({ node, ...props }) => <h1 className="text-2xl font-extrabold text-gray-100 mt-6 mb-3 border-b border-[#252828] pb-1" {...props} />,
+                    h2: ({ node, ...props }) => <h2 className="text-xl font-bold text-gray-100 mt-5 mb-2.5 border-b border-[#252828] pb-1" {...props} />,
+                    h3: ({ node, ...props }) => <h3 className="text-lg font-bold text-gray-100 mt-4.5 mb-2" {...props} />,
+                    h4: ({ node, ...props }) => <h4 className="text-base font-bold text-gray-100 mt-4 mb-2" {...props} />,
+                    ul: ({ node, ...props }) => <ul className="list-disc list-inside pl-4 text-gray-300 space-y-1 mb-4" {...props} />,
+                    ol: ({ node, ...props }) => <ol className="list-decimal list-inside pl-4 text-gray-300 space-y-1 mb-4" {...props} />,
+                    li: ({ node, ...props }) => <li className="marker:text-cyan-400" {...props} />,
+                    code: ({ node, inline, ...props }) => {
+                        return inline ? (
+                            <code className="bg-[#1C1F1F] px-1.5 py-0.5 rounded text-[#31b8c6] text-xs font-mono font-bold" {...props} />
+                        ) : (
+                            <pre className="bg-[#1A1C1C] border border-[#2B2E2E] rounded-xl p-4 overflow-x-auto my-4 text-xs font-mono text-cyan-100 shadow-md">
+                                <code {...props} />
+                            </pre>
+                        );
+                    },
+                    table: ({ node, ...props }) => (
+                        <div className="overflow-x-auto my-5 rounded-xl border border-[#2B2E2E] bg-[#161818]/60 shadow-lg">
+                            <table className="min-w-full divide-y divide-[#2B2E2E] text-left text-xs text-gray-300" {...props} />
+                        </div>
+                    ),
+                    thead: ({ node, ...props }) => <thead className="bg-[#1A1C1C] text-[11px] font-bold text-[#31b8c6] uppercase tracking-wider" {...props} />,
+                    tbody: ({ node, ...props }) => <tbody className="divide-y divide-[#232626]" {...props} />,
+                    tr: ({ node, ...props }) => <tr className="hover:bg-[#1C1F1F]/40 transition-colors" {...props} />,
+                    th: ({ node, ...props }) => <th className="px-4 py-3 font-semibold border-b border-[#2B2E2E]" {...props} />,
+                    td: ({ node, ...props }) => <td className="px-4 py-3.5 leading-relaxed" {...props} />,
+                }}
+            >
+                {text}
+            </ReactMarkdown>
         </div>
     );
 };
@@ -208,17 +181,42 @@ const ConversationView = ({
 
                                 {/* Content and Subsystems */}
                                 <div className="flex-1 space-y-4">
-                                    {/* Sender Header */}
-                                    <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                        {isUser ? "You" : "Answer"}
-                                    </div>
+                                     {/* Sender Header */}
+                                     <div className="flex items-center gap-2">
+                                         <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                             {isUser ? "You" : "Answer"}
+                                         </div>
+                                         {isUser && msg._id && msg._id.toString().startsWith("temp-user-") && sending && (
+                                             <span className="flex items-center gap-1.5 text-[10px] text-cyan-400 font-bold uppercase tracking-wider animate-pulse select-none bg-cyan-950/20 px-2 py-0.5 rounded-full border border-cyan-800/30">
+                                                 <Loader2 size={10} className="animate-spin text-cyan-400" />
+                                                 <span>Sending</span>
+                                             </span>
+                                         )}
+                                     </div>
 
                                     {/* Main Body content */}
                                     <div className="text-gray-100 font-sans">
                                         {isUser ? (
-                                            <p className="text-base font-semibold leading-relaxed text-gray-200">
-                                                {msg.content}
-                                            </p>
+                                            <div className="space-y-2">
+                                                {msg.images && msg.images.length > 0 && (
+                                                    <div className="flex flex-wrap gap-2 mb-2">
+                                                        {msg.images.map((img, imgIdx) => (
+                                                            <div key={imgIdx} className="relative rounded-lg overflow-hidden border border-[#2B2E2E] shadow-sm max-w-[200px] bg-[#1C1F1F]">
+                                                                <img
+                                                                    src={img}
+                                                                    alt={`Attachment ${imgIdx + 1}`}
+                                                                    className="max-h-36 object-cover rounded-lg hover:scale-[1.03] transition-transform duration-200"
+                                                                />
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                                {msg.content && (
+                                                    <p className="text-base font-semibold leading-relaxed text-gray-200">
+                                                        {msg.content}
+                                                    </p>
+                                                )}
+                                            </div>
                                         ) : (
                                             <div>
                                                 {/* Sources Citation Bar (Perplexity style) - displayed BEFORE AI content */}

@@ -1,0 +1,95 @@
+================================================================================
+          AI INTELLIGENCE SEARCH ENGINE (PERPLEXITY CLONE)
+                  INTERVIEW PREPARATION & REFERENCE GUIDE
+================================================================================
+
+This guide compiles high-yield technical interview questions, deep dives, and architectural justifications for this project. Use this reference to demonstrate engineering maturity and explain your design decisions with confidence.
+
+--------------------------------------------------------------------------------
+1. SYSTEM ARCHITECTURE & INTEGRATION TECHNOLOGIES
+--------------------------------------------------------------------------------
+
+Q1: Walk me through the high-level architecture of this application.
+A1: This is a full-stack MERN application (MongoDB, Express, React, Node) backed by real-time WebSockets and an AI Orchestration layer powered by LangChain. 
+- The Frontend is a React SPA using Redux Toolkit for centralized state management, styled with a sleek, premium dark-themed Tailwind CSS layout.
+- The Backend is an Express.js server utilizing Socket.io for live communication.
+- The AI Layer integrates both Google Gemini (for visual and conversational completion) and Mistral AI (specifically optimized for chat title generation) via the LangChain SDK.
+- The Database layer is MongoDB, using Mongoose ODM to persist chat threads and messages (including base64 multimodal attachments).
+
+Q2: Why are there two different LLMs (Gemini and Mistral) in this project?
+A2: This represents a classic "Micro-routing" or multi-model routing strategy to optimize speed, capabilities, and token usage:
+- Gemini 2.5 Flash: Selected as the primary engine for main chat interactions because it has exceptional native multimodal vision capabilities, a large context window, and is extremely fast and cost-effective.
+- Mistral Small: Dedicated to the single task of chat title generation. Mistral is highly optimized for short, concise instruction-following tasks. When a user creates a new chat, the system routes the first message to Mistral to summarize it into a clean 3-5 word thread title, keeping our primary Gemini window fully focused on the active user session.
+
+Q3: How does the system authenticate users and secure conversation histories?
+A3: Authentication is stateful and secure, utilizing custom stateless JWTs (JSON Web Tokens) stored inside HTTP-Only Cookies:
+- When a user logs in, the backend signs a JWT (containing user id and username) and sets it as an HTTP-only cookie.
+- An Express middleware ("authUser") intercepts requests to all secure routes (like GET /api/chats/ and POST /api/chats/message).
+- It verifies the signature of the token from the cookie using a private secret key. If valid, the user's decoded information is attached to the "req.user" object and passed down to the controller; if absent or invalid, the request is immediately blocked with a 401 Unauthorized response, preventing cross-site scripting (XSS) token extraction.
+
+--------------------------------------------------------------------------------
+2. MULTIMODAL DESIGN & CLIENT-SIDE IMAGE COMPRESSION
+--------------------------------------------------------------------------------
+
+Q4: How did you implement image uploads, and why did you choose base64 canvas compression over multipart form uploads (like Multer) or direct S3 uploads?
+A4: Choosing Client-Side Canvas Compression + Base64 transmission is a deliberate, high-efficiency engineering choice:
+- Traditional Uploads (Multer/S3/Cloudinary): Introduce heavy infrastructure dependencies, complex multipart form handling, network delay (uploading to server, then server uploading to S3), and billing overheads for storage buckets.
+- Client-Side Compression: In ChatInput.jsx, selected images are loaded into a hidden HTML5 canvas. The canvas resizes the image to a maximum boundary of 1024px while keeping aspect ratio, and exports it as a compressed JPEG data URL at 70% quality.
+- Impact: It downscales a heavy 5MB image down to a lightweight ~100KB instantly. 
+- Base64 direct upload: The base64 strings are posted inside the normal JSON request body. This keeps the upload incredibly fast, simplifies the API to a single POST /message request, keeps database records fully portable, and easily fits under MongoDB's 16MB document boundary limit.
+
+Q5: What changes were required on the Express backend to support base64 uploads, and how did you prevent "PayloadTooLargeError"?
+A5: Standard Express body-parsers limit the incoming JSON body size to 100KB by default. Uploading compressed images in base64 will easily trigger a "PayloadTooLargeError: request entity too large".
+To resolve this, we modified app.js to raise the body-parser limits:
+  app.use(express.json({ limit: "50mb" }));
+  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+This safely allows the server to parse large, multi-image base64 JSON structures without crashing.
+
+Q6: How does LangChain format base64 images so the Gemini model can read them?
+A6: LangChain's HumanMessage supports structured content blocks. In chat.controller.js, we inspect the message record. If the user message has associated images, we map them into an array of message parts. Text goes in as a standard "text" block, and each base64 string goes in as an "image_url" block:
+  const content = [{ type: "text", text: msg.content }];
+  msg.images.forEach(img => {
+      content.push({
+          type: "image_url",
+          image_url: { url: img }
+      });
+  });
+  return new HumanMessage({ content });
+Gemini natively parses the base64 URL inside "image_url.url" and treats it as raw inline media data, analyzing it alongside the user text prompt.
+
+--------------------------------------------------------------------------------
+3. UI EXPERIENCE, LOADERS, AND STATE MANAGEMENT
+--------------------------------------------------------------------------------
+
+Q7: Explain the concept of "Optimistic UI Updates" in your Redux hook (useChat.js) and why it's crucial for UX.
+A7: In a real-world chat application, waiting for the LLM to complete its reasoning and respond can take several seconds. If the user clicks "Send" and nothing happens on screen until the backend responds, the app feels slow or broken.
+We use Optimistic Updates in the sendUserMessage hook:
+- The moment the user clicks Send, we generate a temporary local message object with a distinct key: "temp-user-${Date.now()}" containing the prompt text and compressed image previews.
+- We dispatch "addMessage(tempUserMessage)" to Redux, pushing the user's message to the screen instantly.
+- We then activate the loaders and trigger the async network request to the backend.
+- Once the API responds with the finalized user message and the AI response, we replace the chat logs with the official database records. This makes the interface feel lightning-fast.
+
+Q8: Describe the dynamic loaders you implemented and how they enhance the app.
+A8: We created a cohesive network-aware loading system:
+1. "Shrinking" Preview Loader: If canvas compression of a selected photo takes a brief fraction of a second, a dashed loading block appears in the input bar saying "Shrinking", indicating active processing.
+2. Send Button Spinner: The send arrow icon transforms into a spinning Loader2 wheel when a request is active, telling the user their prompt is transferring.
+3. Optimistic "Sending..." Badge: On the chat thread, a custom pulsing badge saying "Sending" is rendered right next to the user's name on any optimistic temporary message, indicating that the upload is active and history is syncing.
+4. AI Thinking Pulse: A skeletal pulsing block appears under "Perplexity thinking..." to signal that the Gemini API is actively generating the response.
+
+--------------------------------------------------------------------------------
+4. MARKDOWN & TABLE RENDERING (REMARK-GFM)
+--------------------------------------------------------------------------------
+
+Q9: Why did you install "react-markdown" and "remark-gfm" instead of relying on a custom string split/regex parser?
+A9: Early iterations of the clone used a simple line-by-line regex string splitter to parse headers, bold texts, and bullet points. While simple, it has critical drawbacks:
+- It fails on nested formatting, inline code tags, code block syntax highlighting, and completely breaks on tabular data (Markdown tables).
+- Gemini frequently structures comparisons, benchmarks, and data summaries using Markdown tables.
+- Installing "react-markdown" parses full Markdown spec safely, and integrating the "remark-gfm" plugin adds official GitHub Flavored Markdown support, which is the gold standard for rendering complex tables, tasklists, and strikethroughs natively.
+
+Q10: How did you style the markdown tables to match the premium dark theme?
+A10: In ConversationView.jsx, we rode over ReactMarkdown's default HTML elements by defining a "components" mapping object. Instead of rendering standard raw HTML tables, we injected custom Tailwind JSX wrappers:
+- table: Wraps the table in an auto-scrolling container (overflow-x-auto) to prevent page breaks, applying a border-radius border and shadow.
+- thead / th: Colors headers in uppercase tracking-wider layout with our thematic accent tone (text-[#31b8c6]).
+- tr: Applies subtle alternating row highlight hovers (hover:bg-[#1C1F1F]/40).
+- th / td: Applies standard premium padding (px-4 py-3) and soft divider borders (divide-[#2B2E2E]) matching the brand theme.
+================================================================================

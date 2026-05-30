@@ -57,8 +57,8 @@ export const useChat = () => {
         }
     }, [dispatch]);
 
-    const sendUserMessage = useCallback(async (content) => {
-        if (!content || content.trim() === "") return;
+    const sendUserMessage = useCallback(async (content, images = []) => {
+        if ((!content || content.trim() === "") && images.length === 0) return;
         
         const currentChatId = activeChatId;
 
@@ -67,6 +67,7 @@ export const useChat = () => {
             _id: `temp-user-${Date.now()}`,
             content: content,
             role: "user",
+            images: images,
             createdAt: new Date().toISOString(),
         };
 
@@ -77,6 +78,7 @@ export const useChat = () => {
             const data = await chatApi.sendMessage({
                 message: content,
                 chatId: currentChatId,
+                images: images,
             });
 
             if (data) {

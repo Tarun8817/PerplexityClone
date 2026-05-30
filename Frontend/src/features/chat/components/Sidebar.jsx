@@ -40,9 +40,8 @@ const Sidebar = ({
 
     return (
         <aside
-            className={`h-screen flex flex-col bg-[#0F1111] border-r border-[#222424] text-[#E3E3E2] transition-all duration-300 ease-in-out select-none ${
-                isCollapsed ? "w-16" : "w-64"
-            }`}
+            className={`h-screen flex flex-col bg-[#0F1111] border-r border-[#222424] text-[#E3E3E2] transition-all duration-300 ease-in-out select-none ${isCollapsed ? "w-16" : "w-64"
+                }`}
         >
             {/* Top Brand Logo Section */}
             <div className="p-4 flex items-center justify-between border-b border-[#222424] h-16 shrink-0">
@@ -61,7 +60,7 @@ const Sidebar = ({
                         <span className="text-xs font-black text-black">P</span>
                     </div>
                 )}
-                
+
                 {!isCollapsed && (
                     <button
                         onClick={() => setIsCollapsed(true)}
@@ -88,16 +87,15 @@ const Sidebar = ({
             <nav className="px-2 space-y-1 shrink-0">
                 <button
                     onClick={onNewThread}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 cursor-pointer ${
-                        !activeChatId
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 cursor-pointer ${!activeChatId
                             ? "bg-[#202222] text-[#31b8c6] font-semibold"
                             : "text-gray-400 hover:bg-[#1A1C1C] hover:text-gray-200"
-                    }`}
+                        }`}
                 >
                     <Home size={18} />
                     {!isCollapsed && <span>Home</span>}
                 </button>
-                <button
+                {/* <button
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-400 hover:bg-[#1A1C1C] hover:text-gray-200 transition-all duration-200 cursor-pointer"
                 >
                     <Compass size={18} />
@@ -108,7 +106,7 @@ const Sidebar = ({
                 >
                     <Library size={18} />
                     {!isCollapsed && <span>Library</span>}
-                </button>
+                </button> */}
             </nav>
 
             {/* Recent Threads List */}
@@ -124,11 +122,10 @@ const Sidebar = ({
                         return (
                             <div
                                 key={chat._id}
-                                className={`relative group flex items-center justify-between rounded-lg transition-all duration-150 ${
-                                    isActive
+                                className={`relative group flex items-center justify-between rounded-lg transition-all duration-150 ${isActive
                                         ? "bg-[#202222] text-white"
                                         : "text-gray-400 hover:bg-[#1A1C1C] hover:text-gray-200"
-                                }`}
+                                    }`}
                                 onMouseEnter={() => setHoveredChatId(chat._id)}
                                 onMouseLeave={() => setHoveredChatId(null)}
                             >
@@ -141,7 +138,7 @@ const Sidebar = ({
                                         <span className="truncate pr-4">{chat.title || "Untitled Thread"}</span>
                                     )}
                                 </button>
-                                
+
                                 {!isCollapsed && hoveredChatId === chat._id && (
                                     <button
                                         onClick={(e) => {
@@ -185,7 +182,7 @@ const Sidebar = ({
                     <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#31b8c6] to-emerald-500 text-white flex items-center justify-center font-bold text-xs shadow-md shadow-[#31b8c6]/10 shrink-0">
                         {getInitials(user?.username || user?.email)}
                     </div>
-                    
+
                     {!isCollapsed && (
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-gray-200 truncate leading-none mb-1">

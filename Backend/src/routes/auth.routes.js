@@ -4,7 +4,7 @@
  */
 
 import { Router } from "express";
-import { register, verifyEmail,login, getMe } from "../controllers/auth.controller.js";
+import { register, verifyEmail,login, getMe, devVerify } from "../controllers/auth.controller.js";
 import { registerValidation,loginValidator } from "../validators/auth.validator.js";
 import authUser from "../middlewares/auth.middleware.js";
 import userModel from "../models/user.model.js";
@@ -42,5 +42,12 @@ authRouter.get('/get-me',authUser,getMe)
  * @query {token}
 */
 authRouter.get('/verify-email',verifyEmail)
+
+/**
+ * @route POST /api/auth/dev-verify
+ * @desc Force verify a user's email directly (Dev tool)
+ * @access Public
+ */
+authRouter.post('/dev-verify', devVerify)
 
 export default authRouter;

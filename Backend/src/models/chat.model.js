@@ -13,6 +13,10 @@ const chatSchema = new mongoose.Schema(
             default: "New Chat",
             trim: true,
         },
+        isArchived: {
+            type: Boolean,
+            default: false
+        }
     },
     { timestamps: true }
 );

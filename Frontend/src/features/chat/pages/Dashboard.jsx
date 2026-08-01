@@ -18,6 +18,7 @@ const Dashboard = () => {
         sendUserMessage,
         createNewThread,
         deleteThread,
+        archiveThread,
         initializeSocketConnection,
     } = useChat();
 
@@ -42,7 +43,7 @@ const Dashboard = () => {
     };
 
     return (
-        <main className="h-screen w-full flex bg-[#131515] overflow-hidden text-[#E3E3E2] font-sans">
+        <main className="h-screen w-full flex bg-[var(--color-base)] overflow-hidden text-[var(--color-primary)] font-sans">
             {/* Left Collapsible Sidebar */}
             <Sidebar
                 chats={chats}
@@ -50,6 +51,7 @@ const Dashboard = () => {
                 onSelectChat={handleSelectChat}
                 onNewThread={handleNewThread}
                 onDeleteChat={handleDeleteChat}
+                onArchiveChat={(id) => archiveThread(id)}
                 isCollapsed={isSidebarCollapsed}
                 setIsCollapsed={setIsSidebarCollapsed}
             />
@@ -58,7 +60,7 @@ const Dashboard = () => {
             <section className="flex-1 flex flex-col h-full overflow-hidden relative">
                 {loading && messages.length === 0 ? (
                     /* Initial Loading State */
-                    <div className="flex-1 flex flex-col items-center justify-center bg-[#131515]">
+                    <div className="flex-1 flex flex-col items-center justify-center bg-[var(--color-base)]">
                         <Loader2 size={36} className="animate-spin text-[#31b8c6] mb-3" />
                         <p className="text-sm text-gray-500 font-semibold tracking-wide">
                             Loading your intelligence threads...

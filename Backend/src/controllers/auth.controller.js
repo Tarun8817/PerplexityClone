@@ -239,3 +239,45 @@ export async function verifyEmail(req, res) {
     });
   }
 }
+
+/**
+ * @desc Force verify a user's email directly (Dev tool)
+ * @route POST /api/auth/dev-verify
+ * @access Public
+ * @body { email }
+ */
+export async function devVerify(req, res) {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    user.verified = true;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Account forcibly verified via Dev Tool",
+    });
+  } catch (error) {
+    console.error("Dev Verify error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}

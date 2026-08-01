@@ -28,3 +28,8 @@ export async function deleteChat(chatId) {
     const response = await api.delete(`/api/chats/delete/${chatId}`);
     return response.data; // Expected: { message: "..." }
 }
+
+export async function archiveChat(chatId) {
+    const response = await api.patch(`/api/chats/${chatId}/archive`);
+    return response.data; // Expected: { message: "...", chat: {...} }
+}

@@ -6,6 +6,7 @@ import {
     setChats,
     addChat,
     removeChat,
+    updateChat,
     setActiveChatId,
     setMessages,
     addMessage,
@@ -118,6 +119,19 @@ export const useChat = () => {
         }
     }, [dispatch]);
 
+    const archiveThread = useCallback(async (chatId) => {
+        if (!chatId) return;
+        try {
+            const data = await chatApi.archiveChat(chatId);
+            if (data && data.chat) {
+                dispatch(updateChat(data.chat));
+                // If the active chat is archived, we might want to clear it, but let's keep it visible until they navigate away
+            }
+        } catch (err) {
+            dispatch(setError(err.message || "Failed to archive chat"));
+        }
+    }, [dispatch]);
+
     return {
         chats,
         activeChatId,
@@ -130,6 +144,7 @@ export const useChat = () => {
         sendUserMessage,
         createNewThread,
         deleteThread,
+        archiveThread,
         initializeSocketConnection,
     };
 };

@@ -139,6 +139,28 @@ export async function deleteChat(req, res) {
     res.status(200).json({
         message: "chat deleted successfully"
     })
+}
 
+export async function archiveChat(req, res) {
+    try {
+        const { chatId } = req.params;
+        const chat = await chatModel.findOne({
+            _id: chatId,
+            user: req.user.id
+        });
 
+        if (!chat) {
+            return res.status(404).json({ message: "Chat not found" });
+        }
+
+        chat.isArchived = !chat.isArchived;
+        await chat.save();
+
+        res.status(200).json({
+            message: chat.isArchived ? "Chat archived" : "Chat unarchived",
+            chat
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error" });
+    }
 }

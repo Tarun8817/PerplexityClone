@@ -12,8 +12,6 @@ package-lock.json
 # Build output
 /Frontend/dist/
 /Frontend/build/
-/Backend/dist/
-/Backend/build/
 
 # Logs
 logs/

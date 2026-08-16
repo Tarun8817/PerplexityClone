@@ -30,7 +30,7 @@ const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, "dist")));
 
 // Catch-all route for SPA routing (React/Vue/etc.)
-app.get("*", (req, res) => {
+app.get(/.*/, (req, res) => {
     res.sendFile(path.resolve(__dirname, "dist", "index.html"));
 });
 export default app;

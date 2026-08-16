@@ -13,9 +13,9 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(cors({
-    origin:"http://localhost:5173",
-    credentials:true,
-    methods:["GET","POST","PUT","DELETE"],
+    origin: true, // Allows any origin dynamically (fixes CORS errors from different ports/IPs)
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 }))
 // Explicit health API for cron polling
 app.get("/api/health", (req, res) => {

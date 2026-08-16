@@ -45,7 +45,8 @@ const Login = () => {
         e.preventDefault();
         setVerifyMessage("Verifying...");
         try {
-            const response = await fetch("http://localhost:3000/api/auth/dev-verify", {
+            const baseUrl = import.meta.env.PROD ? "" : "http://localhost:3000";
+            const response = await fetch(`${baseUrl}/api/auth/dev-verify`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: verifyEmail })

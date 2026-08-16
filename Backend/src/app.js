@@ -13,7 +13,7 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(cors({
-    origin: true, // Allows any origin dynamically (fixes CORS errors from different ports/IPs)
+    origin: true,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 }))

@@ -6,8 +6,9 @@ export function initSocket(httpServer) {
 
     io = new Server(httpServer, {
         cors: {
-            origin: "http://localhost:5173",
+            origin: true, // Allow any origin dynamically to fix socket CORS errors
             credentials: true,
+            methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
         },
     });
 

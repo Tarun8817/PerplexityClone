@@ -25,12 +25,12 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRouter);
 app.use("/api/chats", chatRouter);
 
-// Serve static frontend from the 'dist' folder
+// Serve static frontend from the 'public' folder
 const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, "dist")));
+app.use(express.static(path.join(__dirname, "public")));
 
 // Catch-all route for SPA routing (React/Vue/etc.)
 app.get(/.*/, (req, res) => {
-    res.sendFile(path.resolve(__dirname, "dist", "index.html"));
+    res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 export default app;

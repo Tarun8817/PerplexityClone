@@ -146,6 +146,32 @@ export async function login(req, res) {
 }
 
 /**
+ * @desc Logout user and clear cookie
+ * @route POST /api/auth/logout
+ * @access Public
+ */
+export async function logout(req, res) {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
+/**
  * @desc Get current logged in user's details
  * @route GET  /api/auth/get-me
  * @access Private
@@ -224,13 +250,8 @@ export async function verifyEmail(req, res) {
     user.verified = true;
     await user.save();
 
-    const html = `
-      <h1>Email Verified Successfully</h1>
-      <p>Your email has been verified. You can now log in to your account.</p>
-      <a href="http://localhost:3000/login">Go to Login</a>
-    `;
-
-    return res.send(html);
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    return res.redirect(`${frontendUrl}/login?verified=true`);
   } catch (error) {
     return res.status(400).json({
       success: false,

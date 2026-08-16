@@ -107,7 +107,7 @@ const ChatInput = ({ onSend, sending, placeholder = "Ask anything..." }) => {
     };
 
     return (
-        <div className="w-full relative bg-[#1A1C1C] border border-[#2B2E2E] focus-within:border-[#31b8c6] rounded-2xl p-3 shadow-xl transition-all duration-200">
+        <div className="w-full relative bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] focus-within:border-[var(--color-primary)] focus-within:shadow-[0_0_0_1px_var(--color-primary)] rounded-lg p-3 shadow-sm transition-all duration-200">
             {/* Hidden File Input */}
             <input
                 type="file"
@@ -120,14 +120,14 @@ const ChatInput = ({ onSend, sending, placeholder = "Ask anything..." }) => {
 
             {/* Selected Images Preview Bar */}
             {(selectedImages.length > 0 || isProcessing) && (
-                <div className="flex flex-wrap gap-2.5 mb-3 pb-2 border-b border-[#252828] select-none items-center">
+                <div className="flex flex-wrap gap-2.5 mb-3 pb-2 border-b border-[var(--color-border-subtle)] select-none items-center">
                     {selectedImages.map((img, idx) => (
-                        <div key={idx} className="relative group w-14 h-14 rounded-lg overflow-hidden border border-[#2B2E2E] shadow-inner bg-[#131515]">
+                        <div key={idx} className="relative group w-14 h-14 rounded-md overflow-hidden border border-[var(--color-border-subtle)] shadow-sm bg-[var(--color-surface-container-low)]">
                             <img src={img} alt="preview" className="w-full h-full object-cover" />
                             <button
                                 type="button"
                                 onClick={() => handleRemoveImage(idx)}
-                                className="absolute top-0.5 right-0.5 p-0.5 rounded-full bg-black/60 hover:bg-red-500 text-gray-400 hover:text-white transition-all cursor-pointer shadow-md"
+                                className="absolute top-0.5 right-0.5 p-0.5 rounded-full bg-[var(--color-surface-container)] hover:bg-[var(--color-error)] text-[var(--color-text-muted)] hover:text-[var(--color-on-error)] transition-all cursor-pointer shadow-sm"
                                 title="Remove image"
                             >
                                 <X size={10} />
@@ -135,9 +135,9 @@ const ChatInput = ({ onSend, sending, placeholder = "Ask anything..." }) => {
                         </div>
                     ))}
                     {isProcessing && (
-                        <div className="w-14 h-14 rounded-lg border border-[#2B2E2E] border-dashed flex flex-col items-center justify-center bg-[#131515] text-[#31b8c6] animate-pulse">
-                            <Loader2 size={16} className="animate-spin text-[#31b8c6]" />
-                            <span className="text-[8px] font-bold text-gray-500 mt-1">Shrinking</span>
+                        <div className="w-14 h-14 rounded-md border border-[var(--color-border-subtle)] border-dashed flex flex-col items-center justify-center bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] animate-pulse">
+                            <Loader2 size={16} className="animate-spin text-[var(--color-primary)]" />
+                            <span className="text-[8px] font-bold text-[var(--color-text-muted)] mt-1">Processing</span>
                         </div>
                     )}
                 </div>
@@ -151,22 +151,22 @@ const ChatInput = ({ onSend, sending, placeholder = "Ask anything..." }) => {
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder}
                 rows={1}
-                className="w-full bg-transparent text-[#E3E3E2] placeholder-[#7F8484] focus:outline-none resize-none min-h-[44px] max-h-[240px] text-[15px] leading-relaxed pr-12 pb-2"
+                className="w-full bg-transparent text-[var(--color-on-background)] placeholder-[var(--color-text-muted)] focus:outline-none resize-none min-h-[44px] max-h-[240px] text-[15px] leading-relaxed pr-12 pb-2"
                 style={{ scrollbarWidth: "thin" }}
             />
  
             {/* Bottom Actions Row */}
-            <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#252828] select-none">
+            <div className="flex items-center justify-between mt-2 pt-2 border-t border-[var(--color-border-subtle)] select-none">
                 <div className="flex items-center gap-3">
                     {/* Image Attachment Trigger Button */}
                     <button
                         type="button"
                         onClick={triggerFileSelect}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#2B2E2E] hover:border-[#31b8c6]/30 hover:bg-[#252828] text-gray-400 hover:text-[#31b8c6] text-xs font-semibold transition-all cursor-pointer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[var(--color-border-subtle)] hover:border-[var(--color-outline)] hover:bg-[var(--color-surface-container)] text-[var(--color-text-muted)] hover:text-[var(--color-primary)] text-xs font-semibold transition-all cursor-pointer"
                         title="Upload images"
                     >
-                        <Paperclip size={14} className="text-[#31b8c6]" />
-                        <span>Upload Images</span>
+                        <Paperclip size={14} />
+                        <span>Attach</span>
                     </button>
                 </div>
  
@@ -176,14 +176,14 @@ const ChatInput = ({ onSend, sending, placeholder = "Ask anything..." }) => {
                         type="button"
                         onClick={handleSubmit}
                         disabled={(!inputValue.trim() && selectedImages.length === 0) || sending}
-                        className={`w-8 h-8 rounded-full flex items-center justify-center text-black font-bold transition-all duration-200 ${
+                        className={`w-8 h-8 rounded-md flex items-center justify-center font-bold transition-all duration-200 ${
                             (inputValue.trim() || selectedImages.length > 0) && !sending
-                                ? "bg-[#31b8c6] text-black shadow-lg shadow-[#31b8c6]/20 hover:scale-105 active:scale-95 cursor-pointer"
-                                : "bg-[#2B2E2E] text-gray-500 cursor-not-allowed"
+                                ? "bg-[var(--color-primary)] text-[var(--color-on-primary)] shadow-md hover:bg-[var(--color-on-surface-variant)] cursor-pointer"
+                                : "bg-[var(--color-surface-container)] text-[var(--color-text-muted)] cursor-not-allowed border border-[var(--color-border-subtle)]"
                         }`}
                     >
                         {sending ? (
-                            <Loader2 size={14} className="animate-spin text-black" />
+                            <Loader2 size={14} className="animate-spin text-[var(--color-on-primary)]" />
                         ) : (
                             <ArrowUp size={16} strokeWidth={2.5} />
                         )}

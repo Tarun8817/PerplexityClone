@@ -1,19 +1,116 @@
 @import "tailwindcss";
 
 @theme {
-  --color-base: #282728;
-  --color-base-darker: #1c1b1c;
-  --color-base-lighter: #3c3b3c;
-  --color-primary: #e0e0e0;
-  --color-secondary: #a0a0a0;
-  --color-accent: #4f46e5;
-  --color-accent-hover: #4338ca;
+  --color-surface: var(--surface);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-bright: var(--surface-bright);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-inverse-surface: var(--inverse-surface);
+  --color-inverse-on-surface: var(--inverse-on-surface);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-secondary: var(--secondary);
+  --color-on-secondary: var(--on-secondary);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-background: var(--background);
+  --color-on-background: var(--on-background);
+  --color-surface-variant: var(--surface-variant);
+  --color-surface-off-white: var(--surface-off-white);
+  --color-border-subtle: var(--border-subtle);
+  --color-text-muted: var(--text-muted);
+  --color-accent-focus: var(--accent-focus);
+  --color-error: var(--error);
+  --color-on-error: var(--on-error);
+  --color-error-container: var(--error-container);
+  
+  --font-sans: 'Inter', 'Geist', system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  --surface: #f9f9f9;
+  --surface-dim: #dadada;
+  --surface-bright: #f9f9f9;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f3f3f4;
+  --surface-container: #eeeeee;
+  --surface-container-high: #e8e8e8;
+  --surface-container-highest: #e2e2e2;
+  --on-surface: #1a1c1c;
+  --on-surface-variant: #444748;
+  --inverse-surface: #2f3131;
+  --inverse-on-surface: #f0f1f1;
+  --outline: #747878;
+  --outline-variant: #c4c7c7;
+  --primary: #121212;
+  --on-primary: #ffffff;
+  --primary-container: #1c1b1b;
+  --on-primary-container: #858383;
+  --secondary: #5d5f5f;
+  --on-secondary: #ffffff;
+  --secondary-container: #dcdddd;
+  --on-secondary-container: #5f6161;
+  --background: #fbfbfb;
+  --on-background: #1a1c1c;
+  --surface-variant: #e2e2e2;
+  --surface-off-white: #fbfbfb;
+  --border-subtle: #e5e5e5;
+  --text-muted: #666666;
+  --accent-focus: #3b82f6;
+  --error: #ba1a1a;
+  --on-error: #ffffff;
+  --error-container: #ffdad6;
+}
+
+.dark {
+  --surface: #111111;
+  --surface-dim: #111111;
+  --surface-bright: #333333;
+  --surface-container-lowest: #0a0a0a;
+  --surface-container-low: #1a1a1a;
+  --surface-container: #222222;
+  --surface-container-high: #2a2a2a;
+  --surface-container-highest: #333333;
+  --on-surface: #e2e2e2;
+  --on-surface-variant: #a0a0a0;
+  --inverse-surface: #e2e2e2;
+  --inverse-on-surface: #111111;
+  --outline: #666666;
+  --outline-variant: #444444;
+  --primary: #ffffff;
+  --on-primary: #000000;
+  --primary-container: #e2e2e2;
+  --on-primary-container: #111111;
+  --secondary: #a0a0a0;
+  --on-secondary: #000000;
+  --secondary-container: #333333;
+  --on-secondary-container: #e2e2e2;
+  --background: #111111;
+  --on-background: #e2e2e2;
+  --surface-variant: #333333;
+  --surface-off-white: #111111;
+  --border-subtle: #2b2e2e;
+  --text-muted: #888888;
+  --accent-focus: #60a5fa;
+  --error: #ffb4ab;
+  --on-error: #690005;
+  --error-container: #93000a;
 }
 
 body {
-  background-color: var(--color-base);
-  color: var(--color-primary);
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -27,12 +124,12 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-base); 
+  background: var(--color-surface-off-white);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-base-lighter); 
+  background: var(--color-surface-container-high);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-secondary); 
+  background: var(--color-secondary);
 }

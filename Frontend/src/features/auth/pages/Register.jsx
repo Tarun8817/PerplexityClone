@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
+import { Eye, EyeOff } from "lucide-react";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -12,6 +13,7 @@ const Register = () => {
         password: "",
     });
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -35,16 +37,16 @@ const Register = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[var(--color-base)] flex flex-col items-center justify-center px-4 font-sans text-[var(--color-primary)]">
+        <div className="min-h-screen bg-[var(--color-background)] flex flex-col items-center justify-center px-4 font-sans text-[var(--color-on-background)]">
             <div className="w-full max-w-md">
                 
                 {/* Main Register Card */}
-                <div className="bg-[var(--color-base-darker)] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-10 border border-[var(--color-base-lighter)] transition-all duration-300">
-                    <div className="text-center mb-10">
-                        <h1 className="text-3xl font-semibold mb-2 tracking-tight text-[var(--color-primary)]">
+                <div className="bg-[var(--color-surface-container-lowest)] rounded-lg shadow-sm p-8 border border-[var(--color-border-subtle)] transition-all duration-300">
+                    <div className="text-center mb-8">
+                        <h1 className="text-2xl font-semibold mb-2 tracking-tight text-[var(--color-on-background)]">
                             Create an Account
                         </h1>
-                        <p className="text-[var(--color-secondary)] text-sm">
+                        <p className="text-[var(--color-on-surface-variant)] text-sm">
                             Join Perplexity to start searching
                         </p>
                     </div>
@@ -52,7 +54,7 @@ const Register = () => {
                     <form onSubmit={handleSubmit} className="space-y-5">
                         
                         <div className="space-y-1.5">
-                            <label className="block text-sm font-medium text-[var(--color-secondary)]">Username</label>
+                            <label className="block text-sm font-medium text-[var(--color-on-surface-variant)]">Username</label>
                             <input
                                 type="text"
                                 name="username"
@@ -60,12 +62,12 @@ const Register = () => {
                                 onChange={handleChange}
                                 required
                                 placeholder="johndoe"
-                                className="w-full px-4 py-3 bg-[var(--color-base)] border border-[var(--color-base-lighter)] rounded-xl text-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all placeholder-[var(--color-secondary)] opacity-80 focus:opacity-100"
+                                className="w-full px-3 py-2.5 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-lg text-[var(--color-on-background)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all placeholder-[var(--color-text-muted)]"
                             />
                         </div>
 
                         <div className="space-y-1.5">
-                            <label className="block text-sm font-medium text-[var(--color-secondary)]">Email</label>
+                            <label className="block text-sm font-medium text-[var(--color-on-surface-variant)]">Email</label>
                             <input
                                 type="email"
                                 name="email"
@@ -73,43 +75,58 @@ const Register = () => {
                                 onChange={handleChange}
                                 required
                                 placeholder="you@example.com"
-                                className="w-full px-4 py-3 bg-[var(--color-base)] border border-[var(--color-base-lighter)] rounded-xl text-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all placeholder-[var(--color-secondary)] opacity-80 focus:opacity-100"
+                                className="w-full px-3 py-2.5 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-lg text-[var(--color-on-background)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all placeholder-[var(--color-text-muted)]"
                             />
                         </div>
 
                         <div className="space-y-1.5">
-                            <label className="block text-sm font-medium text-[var(--color-secondary)]">Password</label>
-                            <input
-                                type="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                required
-                                placeholder="••••••••"
-                                className="w-full px-4 py-3 bg-[var(--color-base)] border border-[var(--color-base-lighter)] rounded-xl text-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all placeholder-[var(--color-secondary)] opacity-80 focus:opacity-100"
-                            />
+                            <label className="block text-sm font-medium text-[var(--color-on-surface-variant)]">Password</label>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="••••••••"
+                                    className="w-full px-3 py-2.5 pr-10 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-lg text-[var(--color-on-background)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all placeholder-[var(--color-text-muted)]"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-on-background)] transition-colors"
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
                         </div>
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full py-3 mt-6 rounded-xl text-white font-medium bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-500/20"
+                            className="w-full py-2.5 mt-2 rounded-lg text-[var(--color-on-primary)] font-medium bg-[var(--color-primary)] hover:bg-[var(--color-on-surface-variant)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading ? "Creating account..." : "Sign Up"}
                         </button>
                     </form>
 
                     <div className="mt-8 text-center">
-                        <p className="text-[var(--color-secondary)] text-sm">
+                        <p className="text-[var(--color-on-surface-variant)] text-sm">
                             Already have an account?{" "}
                             <button
                                 onClick={() => navigate("/login")}
-                                className="font-medium text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors"
+                                className="font-medium text-[var(--color-on-background)] hover:underline transition-colors"
                             >
                                 Log in
                             </button>
                         </p>
                     </div>
+                </div>
+
+                <div className="mt-6 text-center">
+                    <p className="text-xs text-[var(--color-text-muted)]">
+                        By continuing, you agree to our <a href="#" className="underline">Terms of Service</a> and <a href="#" className="underline">Privacy Policy</a>.
+                    </p>
                 </div>
 
             </div>

@@ -8,8 +8,6 @@ import {
     ThumbsUp,
     ThumbsDown,
     Share2,
-    RotateCw,
-    ExternalLink,
     Search,
     BookOpen,
     Loader2,
@@ -17,42 +15,40 @@ import {
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-// Helper to render beautiful content block by block (ReactMarkdown + GFM tables)
 const FormattedAnswer = ({ text }) => {
     if (!text) return null;
 
     return (
-        <div className="prose prose-invert max-w-none text-gray-200 text-[15px] leading-relaxed font-sans select-text">
+        <div className="prose prose-slate max-w-none text-[var(--color-on-background)] text-[15px] leading-relaxed font-sans select-text">
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
-                    p: ({ node, ...props }) => <p className="text-gray-300 mb-4 last:mb-0 leading-relaxed" {...props} />,
-                    strong: ({ node, ...props }) => <strong className="font-semibold text-white" {...props} />,
-                    h1: ({ node, ...props }) => <h1 className="text-2xl font-extrabold text-gray-100 mt-6 mb-3 border-b border-[#252828] pb-1" {...props} />,
-                    h2: ({ node, ...props }) => <h2 className="text-xl font-bold text-gray-100 mt-5 mb-2.5 border-b border-[#252828] pb-1" {...props} />,
-                    h3: ({ node, ...props }) => <h3 className="text-lg font-bold text-gray-100 mt-4.5 mb-2" {...props} />,
-                    h4: ({ node, ...props }) => <h4 className="text-base font-bold text-gray-100 mt-4 mb-2" {...props} />,
-                    ul: ({ node, ...props }) => <ul className="list-disc list-inside pl-4 text-gray-300 space-y-1 mb-4" {...props} />,
-                    ol: ({ node, ...props }) => <ol className="list-decimal list-inside pl-4 text-gray-300 space-y-1 mb-4" {...props} />,
-                    li: ({ node, ...props }) => <li className="marker:text-cyan-400" {...props} />,
+                    p: ({ node, ...props }) => <p className="mb-4 last:mb-0 leading-relaxed" {...props} />,
+                    strong: ({ node, ...props }) => <strong className="font-semibold text-[var(--color-on-background)]" {...props} />,
+                    h1: ({ node, ...props }) => <h1 className="text-2xl font-semibold mt-6 mb-3 border-b border-[var(--color-border-subtle)] pb-1" {...props} />,
+                    h2: ({ node, ...props }) => <h2 className="text-xl font-semibold mt-5 mb-2.5 border-b border-[var(--color-border-subtle)] pb-1" {...props} />,
+                    h3: ({ node, ...props }) => <h3 className="text-lg font-semibold mt-4.5 mb-2" {...props} />,
+                    ul: ({ node, ...props }) => <ul className="list-disc list-inside space-y-1 mb-4" {...props} />,
+                    ol: ({ node, ...props }) => <ol className="list-decimal list-inside space-y-1 mb-4" {...props} />,
+                    li: ({ node, ...props }) => <li className="marker:text-[var(--color-text-muted)]" {...props} />,
                     code: ({ node, inline, ...props }) => {
                         return inline ? (
-                            <code className="bg-[#1C1F1F] px-1.5 py-0.5 rounded text-[#31b8c6] text-xs font-mono font-bold" {...props} />
+                            <code className="bg-[var(--color-surface-container)] px-1.5 py-0.5 rounded text-[var(--color-primary)] text-[13px] font-mono" {...props} />
                         ) : (
-                            <pre className="bg-[#1A1C1C] border border-[#2B2E2E] rounded-xl p-4 overflow-x-auto my-4 text-xs font-mono text-cyan-100 shadow-md">
+                            <pre className="bg-[var(--color-surface-container-low)] border border-[var(--color-border-subtle)] rounded-lg p-4 overflow-x-auto my-4 text-[13px] font-mono text-[var(--color-on-background)] shadow-sm">
                                 <code {...props} />
                             </pre>
                         );
                     },
                     table: ({ node, ...props }) => (
-                        <div className="overflow-x-auto my-5 rounded-xl border border-[#2B2E2E] bg-[#161818]/60 shadow-lg">
-                            <table className="min-w-full divide-y divide-[#2B2E2E] text-left text-xs text-gray-300" {...props} />
+                        <div className="overflow-x-auto my-5 rounded-lg border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] shadow-sm">
+                            <table className="min-w-full divide-y divide-[var(--color-border-subtle)] text-left text-sm" {...props} />
                         </div>
                     ),
-                    thead: ({ node, ...props }) => <thead className="bg-[#1A1C1C] text-[11px] font-bold text-[#31b8c6] uppercase tracking-wider" {...props} />,
-                    tbody: ({ node, ...props }) => <tbody className="divide-y divide-[#232626]" {...props} />,
-                    tr: ({ node, ...props }) => <tr className="hover:bg-[#1C1F1F]/40 transition-colors" {...props} />,
-                    th: ({ node, ...props }) => <th className="px-4 py-3 font-semibold border-b border-[#2B2E2E]" {...props} />,
+                    thead: ({ node, ...props }) => <thead className="bg-[var(--color-surface-container-low)] text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]" {...props} />,
+                    tbody: ({ node, ...props }) => <tbody className="divide-y divide-[var(--color-border-subtle)]" {...props} />,
+                    tr: ({ node, ...props }) => <tr className="hover:bg-[var(--color-surface-off-white)] transition-colors" {...props} />,
+                    th: ({ node, ...props }) => <th className="px-4 py-3 font-semibold border-b border-[var(--color-border-subtle)]" {...props} />,
                     td: ({ node, ...props }) => <td className="px-4 py-3.5 leading-relaxed" {...props} />,
                 }}
             >
@@ -70,7 +66,6 @@ const ConversationView = ({
     const bottomRef = useRef(null);
     const [copiedIndex, setCopiedIndex] = useState(null);
 
-    // Scroll to bottom on updates
     useEffect(() => {
         if (bottomRef.current) {
             bottomRef.current.scrollIntoView({ behavior: "smooth" });
@@ -83,7 +78,6 @@ const ConversationView = ({
         setTimeout(() => setCopiedIndex(null), 2000);
     };
 
-    // Simulate realistic source citations matching the content topic
     const getSourcesForPrompt = (content) => {
         const lower = (content || "").toLowerCase();
         if (lower.includes("quantum")) {
@@ -112,7 +106,6 @@ const ConversationView = ({
         ];
     };
 
-    // Suggest logical related questions
     const getRelatedQuestions = (lastMessage) => {
         const content = lastMessage ? lastMessage.content.toLowerCase() : "";
         if (content.includes("quantum")) {
@@ -141,7 +134,6 @@ const ConversationView = ({
         ];
     };
 
-    // Find the last user message to generate context sources and follow-ups
     const getLastUserMessage = () => {
         const userMsgs = messages.filter((m) => m.role === "user");
         return userMsgs[userMsgs.length - 1] || null;
@@ -152,56 +144,54 @@ const ConversationView = ({
     const relatedQuestions = lastUserMsg ? getRelatedQuestions(lastUserMsg) : [];
 
     return (
-        <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#131515]">
+        <div className="flex-1 flex flex-col h-full overflow-hidden bg-[var(--color-background)]">
             {/* Scrollable Conversation Box */}
-            <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-8 select-text scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
-                <div className="max-w-3xl w-full mx-auto space-y-8">
+            <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-8 select-text scrollbar-thin scrollbar-thumb-[var(--color-surface-container)] scrollbar-track-transparent">
+                <div className="max-w-3xl w-full mx-auto space-y-12">
                     {messages.map((msg, idx) => {
                         const isUser = msg.role === "user";
 
                         return (
                             <div
                                 key={msg._id || idx}
-                                className={`flex items-start gap-4 animate-in fade-in duration-200 ${
-                                    isUser ? "border-b border-[#1A1C1C] pb-4" : ""
-                                }`}
+                                className={`flex items-start gap-4 animate-in fade-in duration-200`}
                             >
                                 {/* Left Side Icon / Avatar */}
                                 <div className="shrink-0 mt-0.5">
                                     {isUser ? (
-                                        <div className="w-7 h-7 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-gray-300">
-                                            <User size={14} />
+                                        <div className="w-8 h-8 rounded-full bg-[var(--color-surface-container-high)] border border-[var(--color-border-subtle)] flex items-center justify-center text-[var(--color-on-background)]">
+                                            <User size={16} />
                                         </div>
                                     ) : (
-                                        <div className="w-7 h-7 rounded-full bg-cyan-950/40 border border-cyan-800/40 flex items-center justify-center text-cyan-400">
-                                            <Sparkles size={14} className="fill-cyan-400/20" />
+                                        <div className="w-8 h-8 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-[var(--color-on-primary)] shadow-sm">
+                                            <Sparkles size={16} className="fill-[var(--color-on-primary)]" />
                                         </div>
                                     )}
                                 </div>
 
                                 {/* Content and Subsystems */}
-                                <div className="flex-1 space-y-4">
+                                <div className="flex-1 space-y-3">
                                      {/* Sender Header */}
                                      <div className="flex items-center gap-2">
-                                         <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                             {isUser ? "You" : "Answer"}
+                                         <div className="text-sm font-medium text-[var(--color-on-background)]">
+                                             {isUser ? "You" : "Perplexity"}
                                          </div>
                                          {isUser && msg._id && msg._id.toString().startsWith("temp-user-") && sending && (
-                                             <span className="flex items-center gap-1.5 text-[10px] text-cyan-400 font-bold uppercase tracking-wider animate-pulse select-none bg-cyan-950/20 px-2 py-0.5 rounded-full border border-cyan-800/30">
-                                                 <Loader2 size={10} className="animate-spin text-cyan-400" />
+                                             <span className="flex items-center gap-1.5 text-[10px] text-[var(--color-text-muted)] font-medium uppercase tracking-wider animate-pulse select-none bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full">
+                                                 <Loader2 size={10} className="animate-spin text-[var(--color-text-muted)]" />
                                                  <span>Sending</span>
                                              </span>
                                          )}
                                      </div>
 
                                     {/* Main Body content */}
-                                    <div className="text-gray-100 font-sans">
+                                    <div className="font-sans">
                                         {isUser ? (
                                             <div className="space-y-2">
                                                 {msg.images && msg.images.length > 0 && (
                                                     <div className="flex flex-wrap gap-2 mb-2">
                                                         {msg.images.map((img, imgIdx) => (
-                                                            <div key={imgIdx} className="relative rounded-lg overflow-hidden border border-[#2B2E2E] shadow-sm max-w-[200px] bg-[#1C1F1F]">
+                                                            <div key={imgIdx} className="relative rounded-lg overflow-hidden border border-[var(--color-border-subtle)] shadow-sm max-w-[200px] bg-[var(--color-surface-container-lowest)]">
                                                                 <img
                                                                     src={img}
                                                                     alt={`Attachment ${imgIdx + 1}`}
@@ -212,37 +202,37 @@ const ConversationView = ({
                                                     </div>
                                                 )}
                                                 {msg.content && (
-                                                    <p className="text-base font-semibold leading-relaxed text-gray-200">
+                                                    <p className="text-lg text-[var(--color-on-background)]">
                                                         {msg.content}
                                                     </p>
                                                 )}
                                             </div>
                                         ) : (
                                             <div>
-                                                {/* Sources Citation Bar (Perplexity style) - displayed BEFORE AI content */}
+                                                {/* Sources Citation Bar */}
                                                 {idx === messages.length - 1 && activeSources.length > 0 && (
                                                     <div className="mb-6 animate-in slide-in-from-top-2 duration-300">
-                                                        <div className="flex items-center gap-1.5 text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">
-                                                            <Search size={12} className="text-cyan-400" />
-                                                            <span>Sources Found</span>
+                                                        <div className="flex items-center gap-2 text-sm font-semibold text-[var(--color-on-background)] mb-3 border-b border-[var(--color-border-subtle)] pb-2">
+                                                            <Search size={16} className="text-[var(--color-text-muted)]" />
+                                                            <span>Sources</span>
                                                         </div>
-                                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                                                             {activeSources.map((src, sIdx) => (
                                                                 <a
                                                                     key={sIdx}
                                                                     href={src.url}
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
-                                                                    className="flex items-center gap-2 p-2 rounded-lg bg-[#1A1C1C] border border-[#222424] hover:border-cyan-500/20 text-xs font-medium text-gray-300 hover:text-cyan-400 transition-all select-none"
+                                                                    className="flex flex-col gap-1 p-3 rounded-lg bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] hover:shadow-md transition-all select-none"
                                                                 >
-                                                                    <div className="w-4 h-4 rounded bg-zinc-800 flex items-center justify-center text-[10px] text-cyan-400 font-bold shrink-0">
-                                                                        {sIdx + 1}
-                                                                    </div>
-                                                                    <div className="min-w-0">
-                                                                        <p className="truncate text-gray-200 font-semibold leading-none mb-0.5">
-                                                                            {src.name}
-                                                                        </p>
-                                                                        <p className="text-[9px] text-gray-500 truncate leading-none">
+                                                                    <p className="truncate text-sm font-medium text-[var(--color-on-background)]">
+                                                                        {src.name}
+                                                                    </p>
+                                                                    <div className="flex items-center gap-1.5 text-[11px] text-[var(--color-text-muted)]">
+                                                                        <div className="w-3.5 h-3.5 rounded bg-[var(--color-surface-container-high)] flex items-center justify-center font-semibold shrink-0">
+                                                                            {sIdx + 1}
+                                                                        </div>
+                                                                        <p className="truncate">
                                                                             {src.site}
                                                                         </p>
                                                                     </div>
@@ -252,6 +242,10 @@ const ConversationView = ({
                                                     </div>
                                                 )}
 
+                                                <div className="flex items-center gap-2 text-sm font-semibold text-[var(--color-on-background)] mb-3 border-b border-[var(--color-border-subtle)] pb-2">
+                                                    <BookOpen size={16} className="text-[var(--color-text-muted)]" />
+                                                    <span>Answer</span>
+                                                </div>
                                                 <FormattedAnswer text={msg.content} />
                                             </div>
                                         )}
@@ -259,14 +253,14 @@ const ConversationView = ({
 
                                     {/* Action Row for AI replies */}
                                     {!isUser && (
-                                        <div className="flex items-center gap-4 text-gray-500 pt-2 select-none border-t border-[#1C1F1F]">
+                                        <div className="flex items-center gap-2 text-[var(--color-text-muted)] pt-3 select-none">
                                             <button
                                                 onClick={() => handleCopy(msg.content, idx)}
-                                                className="p-1 hover:bg-[#202222] rounded transition-colors text-gray-500 hover:text-gray-300"
+                                                className="p-1.5 hover:bg-[var(--color-surface-container)] rounded-md transition-colors hover:text-[var(--color-primary)]"
                                                 title="Copy to clipboard"
                                             >
                                                 {copiedIndex === idx ? (
-                                                    <span className="flex items-center gap-1 text-xs text-emerald-400 font-semibold">
+                                                    <span className="flex items-center gap-1 text-xs font-medium">
                                                         <Check size={14} />
                                                         <span>Copied!</span>
                                                     </span>
@@ -274,13 +268,13 @@ const ConversationView = ({
                                                     <Copy size={14} />
                                                 )}
                                             </button>
-                                            <button className="p-1 hover:bg-[#202222] rounded transition-colors hover:text-[#31b8c6]" title="Helpful">
+                                            <button className="p-1.5 hover:bg-[var(--color-surface-container)] rounded-md transition-colors hover:text-[var(--color-primary)]" title="Helpful">
                                                 <ThumbsUp size={14} />
                                             </button>
-                                            <button className="p-1 hover:bg-[#202222] rounded transition-colors hover:text-red-400" title="Not helpful">
+                                            <button className="p-1.5 hover:bg-[var(--color-surface-container)] rounded-md transition-colors hover:text-[var(--color-primary)]" title="Not helpful">
                                                 <ThumbsDown size={14} />
                                             </button>
-                                            <button className="p-1 hover:bg-[#202222] rounded transition-colors hover:text-gray-300" title="Share thread">
+                                            <button className="p-1.5 hover:bg-[var(--color-surface-container)] rounded-md transition-colors hover:text-[var(--color-primary)]" title="Share thread">
                                                 <Share2 size={14} />
                                             </button>
                                         </div>
@@ -294,18 +288,18 @@ const ConversationView = ({
                     {sending && (
                         <div className="flex items-start gap-4 animate-pulse">
                             <div className="shrink-0 mt-0.5">
-                                <div className="w-7 h-7 rounded-full bg-cyan-950/40 border border-cyan-800/40 flex items-center justify-center text-cyan-400">
-                                    <Sparkles size={14} className="animate-spin text-[#31b8c6]" />
+                                <div className="w-8 h-8 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-[var(--color-on-primary)] shadow-sm">
+                                    <Sparkles size={16} className="animate-spin" />
                                 </div>
                             </div>
                             <div className="flex-1 space-y-3">
-                                <div className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-                                    Perplexity thinking
+                                <div className="text-sm font-medium text-[var(--color-on-background)]">
+                                    Perplexity
                                 </div>
-                                <div className="space-y-2">
-                                    <div className="h-4 bg-[#1A1C1C] rounded w-11/12" />
-                                    <div className="h-4 bg-[#1A1C1C] rounded w-5/6" />
-                                    <div className="h-4 bg-[#1A1C1C] rounded w-2/3" />
+                                <div className="space-y-2 max-w-xl">
+                                    <div className="h-3.5 bg-[var(--color-surface-container)] rounded w-full" />
+                                    <div className="h-3.5 bg-[var(--color-surface-container)] rounded w-5/6" />
+                                    <div className="h-3.5 bg-[var(--color-surface-container)] rounded w-2/3" />
                                 </div>
                             </div>
                         </div>
@@ -313,19 +307,19 @@ const ConversationView = ({
 
                     {/* Related Follow-Ups Recommendations Section */}
                     {!sending && messages.length > 0 && messages[messages.length - 1].role === "ai" && (
-                        <div className="pt-4 border-t border-[#1C1F1F] space-y-3 select-none animate-in fade-in duration-300">
-                            <div className="flex items-center gap-1.5 text-xs text-gray-500 font-bold uppercase tracking-wider">
-                                <BookOpen size={12} className="text-teal-400" />
-                                <span>Related Questions</span>
+                        <div className="pt-6 border-t border-[var(--color-border-subtle)] space-y-3 select-none animate-in fade-in duration-300">
+                            <div className="flex items-center gap-2 text-sm font-semibold text-[var(--color-on-background)] mb-2">
+                                <Search size={16} className="text-[var(--color-text-muted)]" />
+                                <span>Related</span>
                             </div>
                             <div className="flex flex-col gap-2">
                                 {relatedQuestions.map((q, qIdx) => (
                                     <button
                                         key={qIdx}
                                         onClick={() => onSend(q)}
-                                        className="w-full text-left p-2.5 rounded-lg border border-[#222424] hover:border-cyan-500/20 bg-[#1A1C1C]/40 hover:bg-[#1A1C1C] text-sm text-gray-300 hover:text-cyan-400 transition-colors cursor-pointer"
+                                        className="w-full text-left p-3.5 rounded-lg border border-[var(--color-border-subtle)] hover:border-[var(--color-primary)] bg-[var(--color-surface-container-lowest)] text-sm text-[var(--color-on-background)] transition-all cursor-pointer shadow-sm hover:shadow-md"
                                     >
-                                        {q} →
+                                        {q}
                                     </button>
                                 ))}
                             </div>
@@ -337,7 +331,7 @@ const ConversationView = ({
             </div>
 
             {/* Reusable ChatInput Sticky Follow-Up at bottom */}
-            <div className="p-4 border-t border-[#1A1C1C] bg-[#0E1010]/80 backdrop-blur-md shrink-0">
+            <div className="p-4 border-t border-[var(--color-border-subtle)] bg-[var(--color-background)] shrink-0">
                 <div className="max-w-3xl w-full mx-auto">
                     <ChatInput onSend={onSend} sending={sending} placeholder="Ask a follow-up..." />
                 </div>

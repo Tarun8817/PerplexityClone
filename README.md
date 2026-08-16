@@ -2,11 +2,46 @@
 
 [![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node Version](https://img.shields.io/badge/node-%3E%3D%2018.0.0-emerald.svg)](https://nodejs.org)
-[![Vite Version](https://img.shields.io/badge/vite-%3E%3D%207.0.0-cyan.svg)](https://vitejs.dev)
+[![React Version](https://img.shields.io/badge/react-%5E18.2.0-blue.svg)](https://react.dev)
+[![Vite Version](https://img.shields.io/badge/vite-%3E%3D%205.0.0-cyan.svg)](https://vitejs.dev)
+[![Tailwind CSS](https://img.shields.io/badge/tailwind-css-38bdf8.svg)](https://tailwindcss.com)
+[![MongoDB](https://img.shields.io/badge/mongodb-database-green.svg)](https://www.mongodb.com/)
 [![Redux](https://img.shields.io/badge/redux-toolkit-purple.svg)](https://redux-toolkit.js.org/)
 [![Google Gemini](https://img.shields.io/badge/AI-Gemini%202.5%20Flash-orange.svg)](https://deepmind.google/technologies/gemini/)
 
 A premium, high-performance conversational AI search engine designed to replicate the Perplexity.ai experience. Featuring state-of-the-art **multimodal inputs**, **real-time reactive loaders**, **instant client-side canvas compression**, and **GitHub Flavored Markdown (GFM) parsed tables** wrapped inside a sleek glassmorphic dark interface.
+
+## 📸 Screenshots
+
+![Chat Interface](Frontend/public/image.png)
+
+![Multimodal Uploads](Frontend/public/imagecopy.png)
+
+---
+
+## 🛠️ Tech Stack & Libraries Used
+
+This project utilizes a modern MERN stack combined with cutting-edge AI integrations and UI libraries:
+
+**Frontend (React/Vite):**
+- **React.js** with **Vite** for lightning-fast HMR and building
+- **Tailwind CSS** for modern, utility-first glassmorphic styling
+- **Redux Toolkit** for predictable state management across the app
+- **React Router Dom** for client-side routing
+- **React-Hot-Toast** for beautiful, non-intrusive notification popups
+- **Lucide React** for clean and consistent iconography
+- **React Markdown** & **Remark GFM** for parsing AI markdown tables and code blocks
+
+**Backend (Node.js/Express):**
+- **Node.js & Express.js** for a robust RESTful API
+- **MongoDB & Mongoose** for flexible document-based data persistence
+- **Socket.io** for real-time bidirectional event streaming
+- **JSON Web Tokens (JWT) & bcrypt** for secure, HTTP-only cookie authentication
+- **Nodemailer** for automated email verification dispatching
+
+**AI & LLMs:**
+- **Google Gemini 2.5 Flash API** for rapid, multimodal reasoning (text + images)
+- **Mistral AI (via LangChain)** for smart, contextual thread title summarization
 
 ---
 
@@ -42,15 +77,16 @@ perplexity/
 │   │   ├── middlewares/     # JWT authentication middlewares
 │   │   ├── models/          # Mongoose DB schemas (user, chat, message)
 │   │   ├── routes/          # Express route routers
-│   │   ├── services/        # LangChain AI orchestrations
+│   │   ├── services/        # LangChain AI orchestrations & Nodemailer
 │   │   └── sockets/         # Socket.io connection handlers
 │   ├── server.js            # Node HTTP server entry point
 │   ├── package.json         # Backend dependencies
 │   └── .env                 # Backend private environment variables
 │
 ├── Frontend/
+│   ├── public/              # Static assets & screenshots
 │   ├── src/
-│   │   ├── app/             # Redux Store configurator
+│   │   ├── app/             # Redux Store configurator & Routing
 │   │   ├── features/
 │   │   │   ├── auth/        # Auth hooks, states, and landing pages
 │   │   │   └── chat/
@@ -73,33 +109,17 @@ perplexity/
 
 ### 1. Instant Client-Side Image Compression & Downscaling
 * Traditional multipart file uploads slow down chats and inflate server/cloud storage costs.
-* **The Solution**: In [ChatInput.jsx](file:///c:/Users/Tarun%20Rajput/Desktop/perplexity/Frontend/src/features/chat/components/ChatInput.jsx), images are loaded into an offscreen HTML5 `<canvas>` on selection. 
+* **The Solution**: In `ChatInput.jsx`, images are loaded into an offscreen HTML5 `<canvas>` on selection. 
 * **The Compression**: The canvas scales down images exceeding a boundary of `1024px` and compiles them as compressed JPEG base64 data URLs with `70%` quality. 
 * **Impact**: A high-resolution `5MB` phone camera capture shrinks down to a lightweight `~100KB` in milliseconds, offering near-instant uploads that easily fit inside MongoDB's 16MB document boundaries.
 
 ### 2. Github Flavored Markdown (GFM) Table Support
 * Harnesses the power of **`ReactMarkdown`** supercharged by **`remark-gfm`** to parse complex tables, nested listings, tasklists, and code sections returned by Gemini.
-* Customized CSS component overrides in [ConversationView.jsx](file:///c:/Users/Tarun%20Rajput/Desktop/perplexity/Frontend/src/features/chat/components/ConversationView.jsx) render tables inside styled glassmorphic panels featuring dividing lines (`divide-[#2B2E2E]`), alternating headers, row hovers (`hover:bg-[#1C1F1F]/40`), and fully responsive horizontal scroll capabilities.
+* Customized CSS component overrides in `ConversationView.jsx` render tables inside styled glassmorphic panels featuring dividing lines (`divide-[#2B2E2E]`), alternating headers, row hovers (`hover:bg-[#1C1F1F]/40`), and fully responsive horizontal scroll capabilities.
 
-### 3. Integrated Reactive Loaders (UX/UI Feedback)
-* **Canvas Compression Wheel**: A flashing dashed preview box appears inside the upload list with a `"Shrinking"` indicator to represent active client-side downscaling.
-* **Active Send Spinner**: The standard submit arrow changes into a spinning `Loader2` wheel when communication is active.
-* **Optimistic "Sending..." Badge**: Renders user text and image thumbnails immediately on screen, labeled with a custom pulsing badge indicating active transfer to ensure zero cognitive latency.
-
----
-
-## 🌐 API Endpoint Specifications
-
-All endpoints under `/api/chats` require valid credentials set via HTTP-only cookie tokens.
-
-| Method | Endpoint | Description | Payload Schema | Response Schema |
-| :--- | :--- | :--- | :--- | :--- |
-| **POST** | `/api/auth/register` | Register a new user | `{ username, email, password }` | `{ success: true, user }` |
-| **POST** | `/api/auth/login` | Login user (sets HTTP Cookie) | `{ email, password }` | `{ success: true, token }` |
-| **GET** | `/api/chats/` | Retrieve user chat threads | *None* | `{ message, chats: [...] }` |
-| **GET** | `/api/chats/:chatId/messages` | Retrieve thread messages | *None* | `{ message, message: [...] }` |
-| **POST** | `/api/chats/message` | Submit query (multimodal) | `{ message, chat, images }` | `{ title, chat, userMessage, aiMessage }` |
-| **DELETE** | `/api/chats/delete/:chatId` | Delete an entire chat thread | *None* | `{ message: "chat deleted..." }` |
+### 3. Secure Authentication & Verification
+* Full JWT-based authentication flow with **HTTP-Only cookies** preventing XSS attacks.
+* Native email verification powered by Nodemailer. New accounts must verify their email before accessing the dashboard, keeping the userbase secure and spam-free.
 
 ---
 
@@ -133,18 +153,24 @@ Populate `Backend/.env` with the following configuration:
 PORT=3000
 
 # Database Persistence
-# Use "mongodb://localhost:27017/perplexity" for local MongoDB installation
-MONGODB_URI=your_mongodb_connection_string
+MONGODB_URI=mongodb://localhost:27017/Perplexity
 
 # Stateful Authentication Secret
 JWT_SECRET=your_jwt_signature_secret_phrase
 
 # Large Language Model API Credentials
-# Get key here: https://aistudio.google.com/
 GEMINI_API_KEY=your_google_gemini_api_key
-
-# Get key here: https://console.mistral.ai/
 MISTRAL_API_KEY=your_mistral_api_key
+
+# Frontend URL (For redirects)
+FRONTEND_URL=http://localhost:5173
+BASE_URL=http://localhost:3000
+
+# Google Email SMTP Credentials
+GOOGLE_USER=your_email@gmail.com
+GOOGLE_CLIENT_ID=your_oauth_client_id
+GOOGLE_CLIENT_SECRET=your_oauth_client_secret
+GOOGLE_REFRESH_TOKEN=your_oauth_refresh_token
 ```
 
 #### 3. Run the Backend Server
@@ -170,17 +196,3 @@ To build the application for deployment:
 npm run build
 ```
 *Vite will compile and compress modules, outputting optimized client production assets into `Frontend/dist/`.*
-
----
-
-## 💡 Manual Testing & Validation Scenarios
-
-Once both servers are running:
-1. **Sign Up & Log In**: Go to the login screen, register a test account, and authenticate. Confirm cookies are saved in browser tools.
-2. **Text Messaging**: Initiate a conversation thread (e.g. *"Explain quantum computing"*). Verify the socket streams the response, and Mistral summaries generate a concise title in the left sidebar directory.
-3. **Image Attachment**:
-   * Click the capsule **"Upload Images"** button. Select 1 or more images.
-   * Watch the flashing **"Shrinking"** animation downscale the base64 output.
-   * Type a question (e.g., *"What is in this diagram?"*), click send, and check the optimistic **"Sending" badge** overlay.
-   * Confirm Gemini analyzes the visual inputs perfectly.
-4. **Table Verification**: Ask Gemini to *"Compare React, Angular, and Vue in a markdown table."* Verify that the responsive glassmorphic GFM table displays beautifully with elegant alternate header styles.

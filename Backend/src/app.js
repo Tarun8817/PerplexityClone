@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.routes.js";
 import morgan from "morgan"
@@ -16,11 +17,20 @@ app.use(cors({
     credentials:true,
     methods:["GET","POST","PUT","DELETE"],
 }))
-//Health check
-app.get("/",(req,res)=>{
-    res.json({message:"Server is running"});
-})
+// Explicit health API for cron polling
+app.get("/api/health", (req, res) => {
+    res.status(200).json({ status: "OK", timestamp: new Date() });
+});
 
-app.use("/api/auth",authRouter);
-app.use("/api/chats",chatRouter)
+app.use("/api/auth", authRouter);
+app.use("/api/chats", chatRouter);
+
+// Serve static frontend from the 'dist' folder
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, "dist")));
+
+// Catch-all route for SPA routing (React/Vue/etc.)
+app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "dist", "index.html"));
+});
 export default app;

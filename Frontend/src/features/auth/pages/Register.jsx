@@ -105,25 +105,11 @@ const Register = () => {
                                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
-                            {/* Password Validation Hints */}
-                            {formData.password.length > 0 && (
-                                <ul className="text-xs space-y-1 mt-2">
-                                    <li className={formData.password.length >= 6 ? "text-green-500" : "text-red-500"}>
-                                        {formData.password.length >= 6 ? "✓" : "✗"} At least 6 characters
-                                    </li>
-                                    <li className={/[A-Z]/.test(formData.password) ? "text-green-500" : "text-red-500"}>
-                                        {/[A-Z]/.test(formData.password) ? "✓" : "✗"} At least one uppercase letter
-                                    </li>
-                                    <li className={/[0-9]/.test(formData.password) ? "text-green-500" : "text-red-500"}>
-                                        {/[0-9]/.test(formData.password) ? "✓" : "✗"} At least one number
-                                    </li>
-                                </ul>
-                            )}
                         </div>
 
                         <button
                             type="submit"
-                            disabled={loading || formData.password.length < 6 || !/[A-Z]/.test(formData.password) || !/[0-9]/.test(formData.password)}
+                            disabled={loading}
                             className="w-full py-2.5 mt-2 rounded-lg text-[var(--color-on-primary)] font-medium bg-[var(--color-primary)] hover:bg-[var(--color-on-surface-variant)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading ? "Creating account..." : "Sign Up"}

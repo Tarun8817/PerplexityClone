@@ -35,23 +35,33 @@ export async function register(req, res) {
       { expiresIn: "1d" }
     );
 
-    await sendEmail({
-      to: user.email,
-      subject: "Welcome to Perplexity 🎉",
-      html: `
-        <div style="font-family: 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 24px; background-color: #0a0a0a; color: #e0e0e0; border-radius: 12px;">
-          <h1 style="font-size: 24px; color: #ffffff; margin-bottom: 8px;">Welcome to Perplexity, ${user.username}! 👋</h1>
-          <p style="font-size: 15px; color: #9e9e9e; line-height: 1.8; margin-bottom: 24px;">
-            We're glad you're here. Start exploring AI-powered search and discover smarter answers instantly.
-          </p>
-          <p>Please verify your email address by clicking the link below:</p>
-          <a href="${process.env.BASE_URL}/api/auth/verify-email?token=${emailVerificationToken}">Verify Email</a>
-          <p style="font-size: 13px; color: #555; margin-top: 32px;">
-            If you didn't sign up, you can safely ignore this email.
-          </p>
-        </div>
-      `,
-    });
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: "Welcome to Perplexity 🎉",
+        html: `
+          <div style="font-family: 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 24px; background-color: #0a0a0a; color: #e0e0e0; border-radius: 12px;">
+            <h1 style="font-size: 24px; color: #ffffff; margin-bottom: 8px;">Welcome to Perplexity, ${user.username}! 👋</h1>
+            <p style="font-size: 15px; color: #9e9e9e; line-height: 1.8; margin-bottom: 24px;">
+              We're glad you're here. Start exploring AI-powered search and discover smarter answers instantly.
+            </p>
+            <p>Please verify your email address by clicking the link below:</p>
+            <a href="${process.env.BASE_URL}/api/auth/verify-email?token=${emailVerificationToken}">Verify Email</a>
+            <p style="font-size: 13px; color: #555; margin-top: 32px;">
+              If you didn't sign up, you can safely ignore this email.
+            </p>
+          </div>
+        `,
+      });
+    } catch (emailError) {
+      // Rollback: Delete the user if the verification email fails to send
+      await userModel.findByIdAndDelete(user._id);
+      console.error("Email failed to send. Rolled back user creation:", emailError);
+      return res.status(500).json({
+        success: false,
+        message: "Failed to send verification email. Please try again later.",
+      });
+    }
 
     const token = jwt.sign(
       { id: user._id, username: user.username },

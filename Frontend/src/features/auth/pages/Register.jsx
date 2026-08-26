@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
 import { Eye, EyeOff } from "lucide-react";
+import toast from "react-hot-toast";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -28,9 +29,14 @@ const Register = () => {
         try {
             setLoading(true);
             await handleRegister(formData);
+            toast.success("Registration successful! Please log in.");
             navigate("/login");
         } catch (error) {
-            console.log(error);
+            const errorMessage = 
+                error.response?.data?.errors?.[0]?.message || 
+                error.response?.data?.message || 
+                "Registration failed";
+            toast.error(errorMessage);
         } finally {
             setLoading(false);
         }
